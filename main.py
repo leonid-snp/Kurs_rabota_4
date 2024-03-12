@@ -1,18 +1,9 @@
-import requests
+from src.vacancies_hh import VacanciesHH
+from src.save_json import WorkJSON
 
 
-get_url = "https://api.hh.ru/vacancies"
+hh = VacanciesHH()
 
-response = requests.get(get_url, params={"text": "Python"})
-
-print(response.status_code)
-print(response.json())
-
-
-# def user_interaction():
-#     platform = ["HeadHunter"]
-#     search_query = input("Введите поисковой запрос: ")
-#
-#
-# if __name__ == "__main__":
-#     user_interaction()
+save_json = WorkJSON()
+save_json.add_vacancies(hh.get_vacancies())
+save_json.del_vacancies()
