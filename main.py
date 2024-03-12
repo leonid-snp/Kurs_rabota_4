@@ -1,5 +1,5 @@
 from src.vacancies_hh import VacanciesHH
-from src.save_json import WorkJSON
+from src.work_json import WorkJSON
 
 
 hh = VacanciesHH()
