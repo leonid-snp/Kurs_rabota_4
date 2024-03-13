@@ -1,4 +1,3 @@
-import json
 import requests
 
 from src.work_with_api_service import WorkWithAPIService
@@ -19,17 +18,16 @@ class VacanciesHH(WorkWithAPIService):
         response = requests.get("https://api.hh.ru/vacancies")
         return response.status_code
 
-    def get_vacancies(self) -> list:
+    def get_vacancies(self, param: str) -> list:
         """
         Функция возвращает вакансии сервиса hh.ru
         если параметр "params" не передан
         по умолчанию будет None
 
+        :param param: (str) Параметры поиска вакансий
         :return: (str) файл json
         """
         response = requests.get("https://api.hh.ru/vacancies", params={
-            "text": "python developer",
-            "area": 1,
-            "per_page": 2
+            "text": param,
         })
         return response.json().get("items")

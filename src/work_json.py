@@ -7,19 +7,23 @@ class WorkJSON(WorkWithFile):
     """
     Класс для работы с JSON файлом
     """
-    def add_vacancies(self, file: list[dict, ...]) -> None:
+    def add_vacancies(self, file: list[object, ...]) -> None:
         """
-        Функция принимает файл JSON и записывает в новый файл уже отфильтрованные данные
+        Функция принимает список объектов класса
+        и записывает их в формате JSON
 
         :param file: (list) файл JSON
         """
         list_vacancies = []
         for el in file:
             vacancies = {
-                "name": el.get("name"),
-                "salary": el.get("salary"),
-                "requirement": el.get("snippet").get("requirement"),
-                "url": el.get("alternate_url")
+                "name": el.name,
+                "city": el.city,
+                "salary_from": el.salary_from,
+                "salary_to": el.salary_to,
+                "currency": el.currency,
+                "requirement": el.requirements,
+                "url": el.link
             }
             list_vacancies.append(vacancies)
 
