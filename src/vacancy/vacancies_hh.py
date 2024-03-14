@@ -1,6 +1,6 @@
 import requests
 
-from src.work_with_api_service import WorkWithAPIService
+from src.vacancy.work_with_api_service import WorkWithAPIService
 
 
 class VacanciesHH(WorkWithAPIService):
@@ -22,12 +22,22 @@ class VacanciesHH(WorkWithAPIService):
         """
         Функция возвращает вакансии сервиса hh.ru
         если параметр "params" не передан
-        по умолчанию будет None
+        по умолчанию будет поиск по всем вакансиям
+        которые есть на сервисе hh.ru
 
         :param param: (str) Параметры поиска вакансий
         :return: (str) файл json
         """
-        response = requests.get("https://api.hh.ru/vacancies", params={
-            "text": param,
-        })
-        return response.json().get("items")
+        if self.connect_to_api() != 200:
+            print(f"Ошибка подключения статус ошибки {self.connect_to_api()}")
+
+        else:
+            if param:
+                response = requests.get("https://api.hh.ru/vacancies", params={
+                    "text": param,
+                })
+                return response.json().get("items")
+
+            else:
+                response = requests.get("https://api.hh.ru/vacancies")
+                return response.json().get("items")

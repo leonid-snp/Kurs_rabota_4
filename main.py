@@ -1,11 +1,14 @@
-from src.vacancies_hh import VacanciesHH
-from src.vacancy import Vacancy
-from src.work_json import WorkJSON
-from src.work_with_vacancies import filter_vacancies, get_vacancies_by_salary, sort_vacancies, get_top_vacancies, \
-    print_vacancies
+from src.vacancy.vacancies_hh import VacanciesHH
+from src.vacancy.vacancy import Vacancy
+from src.data_storage.work_json import WorkJSON
+from src.utils.work_with_vacancies import filter_vacancies, get_vacancies_by_salary, sort_vacancies, \
+    get_top_vacancies, print_vacancies
 
 
-def user_interaction():
+def user_interaction() -> None:
+    """
+    Функция для работы с пользователем
+    """
     print("Добро пожаловать на платформу HeadHunter")
     search_query = input("Введите поисковой запрос: ")
     top_n = input("Введите количество вакансий для вывода в топ N: ")

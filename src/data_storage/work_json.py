@@ -1,6 +1,6 @@
 import json
 
-from src.work_with_file import WorkWithFile
+from src.data_storage.work_with_file import WorkWithFile
 
 
 class WorkJSON(WorkWithFile):
@@ -16,16 +16,27 @@ class WorkJSON(WorkWithFile):
         """
         list_vacancies = []
         for el in file:
-            vacancies = {
-                "name": el.name,
-                "city": el.city,
-                "salary_from": el.salary_from,
-                "salary_to": el.salary_to,
-                "currency": el.currency,
-                "requirement": el.requirements,
-                "url": el.link
-            }
-            list_vacancies.append(vacancies)
+            if el.salary_from == 0 and el.salary_to == 0 and el.currency is None:
+                vacancies = {
+                    "name": el.name,
+                    "city": el.city,
+                    "salary": "Зарплата не указана...",
+                    "requirement": el.requirements,
+                    "url": el.link
+                }
+                list_vacancies.append(vacancies)
+
+            else:
+                vacancies = {
+                    "name": el.name,
+                    "city": el.city,
+                    "salary_from": el.salary_from,
+                    "salary_to": el.salary_to,
+                    "currency": el.currency,
+                    "requirement": el.requirements,
+                    "url": el.link
+                }
+                list_vacancies.append(vacancies)
 
         with open("./data/hh_vacancies.json", "w") as f:
             json.dump(list_vacancies, f, ensure_ascii=False, indent=4)
@@ -41,7 +52,6 @@ class WorkJSON(WorkWithFile):
     def del_vacancies(self) -> None:
         """
         Функция удаляет содержимое файла JSON
-        :return:
         """
         with open("./data/hh_vacancies.json", "w") as f:
             pass
