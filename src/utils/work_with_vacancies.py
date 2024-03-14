@@ -17,7 +17,8 @@ def filter_vacancies(list_classes: list[object, ...], word: str) -> list[object,
     return list_filtered_classes
 
 
-def get_vacancies_by_salary(list_classes: list[object, ...], salary_range: str) -> list[object, ...] | str:
+def get_vacancies_by_salary(list_classes: list[object, ...], salary_range: str)\
+        -> list[object, ...] | str:
     """
     Функция сортирует список объектов по указанному диапазону зарплат,
     в случае если указанный диапазон не найден, возвращается сообщение пользователю
@@ -28,10 +29,13 @@ def get_vacancies_by_salary(list_classes: list[object, ...], salary_range: str) 
     :return: (list[object, ...]) список отфильтрованных объектов по переданной зарплате
     """
     list_filtered_classes = []
-    salary_from, salary_to, currency = salary_range.split("-")
-    for el in list_classes:
-        if el.salary_from >= int(salary_from) and el.salary_to <= int(salary_to) and el.currency == currency:
-            list_filtered_classes.append(el)
+    if salary_range:
+        salary_from, salary_to, currency = salary_range.lower().split("-")
+        for el in list_classes:
+            if el.salary_from >= int(salary_from) and el.salary_to <= int(salary_to) and el.currency == currency:
+                list_filtered_classes.append(el)
+    else:
+        return list_classes
 
     if len(list_filtered_classes) < 1:
         return f"По данному диапазону зарплат не найдено ни одного совпадения"
@@ -60,8 +64,10 @@ def get_top_vacancies(list_classes: list[object, ...] | object, top_n: str) -> l
     :param top_n: (str) количество объектов которые нужно вернуть
     :return: (list[object, ...] | object) список объектов
     """
-
-    return list_classes[:int(top_n)]
+    if top_n:
+        return list_classes[:int(top_n)]
+    else:
+        return list_classes
 
 
 def print_vacancies(list_classes: list[object, ...] | object) -> None:
