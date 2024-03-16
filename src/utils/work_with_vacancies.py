@@ -1,23 +1,66 @@
-def filter_vacancies(list_classes: list[object, ...], word: str) -> list[object, ...]:
+def filter_vacancies(list_classes: list[object, ...], word: str | None) -> list[object, ...] | None:
     """
     Функция фильтрует список объектов по полученным словам из списка,
     если все слова из списка есть в объекте,
     добавляет объект в отфильтрованный список
     и возвращает отфильтрованный список объектов
 
+    если параметр (word) не указан возвращает
+    первоначальный список объектов (list_classes)
+
+    если по заданным параметрам нечего не будет найдено
+    вернет сообщение об ошибке поиска
+
     :param list_classes: (list[object, ...]) список объектов
-    :param word: (str)
+    :param word: (list[str, ...]) список слов по которым нужно искать
     :return: (list[object, ...]) отфильтрованный список объектов
     """
-    list_filtered_classes = []
-    for el in list_classes:
-        if word in el.name.lower():
-            list_filtered_classes.append(el)
+    try:
+        list_filtered_classes = []
+        if word != [""]:
+            name, city = word.lower().replace(" ", "").split(",")
+            if name != "" and city != "":
+                for el in list_classes:
+                    if name in el.name.lower() \
+                            and city == el.city.lower():
+                        list_filtered_classes.append(el)
 
-    return list_filtered_classes
+                if len(list_filtered_classes) < 1:
+                    raise NameError(f"\nПо заданным ключевым словам ({name}, {city.capitalize()}) "
+                                    f"не найдено ни одного совпадения")
+
+                return list_filtered_classes
+
+            elif name != "" and city == "":
+                for el in list_classes:
+                    if name in el.name.lower():
+                        list_filtered_classes.append(el)
+
+                if len(list_filtered_classes) < 1:
+                    raise NameError(f"\nПо заданному ключевому слову ({name}) "
+                                    f"не найдено ни одного совпадения")
+
+                return list_filtered_classes
+
+            elif city != "" and name == "":
+                for el in list_classes:
+                    if city == el.city.lower():
+                        list_filtered_classes.append(el)
+
+                if len(list_filtered_classes) < 1:
+                    raise NameError(f"\nПо заданному ключевому слову ({city.capitalize()}) "
+                                    f"не найдено ни одного совпадения")
+
+                return list_filtered_classes
+
+        else:
+            return list_classes
+
+    except NameError as a:
+        print(a)
 
 
-def get_vacancies_by_salary(list_classes: list[object, ...], salary_range: str)\
+def get_vacancies_by_salary(list_classes: list[object, ...], salary_range: str) \
         -> list[object, ...] | str:
     """
     Функция сортирует список объектов по указанному диапазону зарплат,
@@ -28,22 +71,91 @@ def get_vacancies_by_salary(list_classes: list[object, ...], salary_range: str)\
     :param salary_range: (str) строковое отображение диапазона зарплат
     :return: (list[object, ...]) список отфильтрованных объектов по переданной зарплате
     """
-    list_filtered_classes = []
-    if salary_range:
-        salary_from, salary_to, currency = salary_range.lower().split("-")
-        for el in list_classes:
-            if el.salary_from >= int(salary_from) and el.salary_to <= int(salary_to) and el.currency == currency:
-                list_filtered_classes.append(el)
-    else:
-        return list_classes
+    try:
+        list_filtered_classes = []
+        if salary_range:
+            salary_from, salary_to, currency = salary_range.lower().split("-")
 
-    if len(list_filtered_classes) < 1:
-        return f"По данному диапазону зарплат не найдено ни одного совпадения"
+            if salary_from != "" and salary_to != "" and currency != "":
+                for el in list_classes:
+                    if el.salary_from >= int(salary_from) and el.salary_to <= int(salary_to) and el.currency == currency:
+                        list_filtered_classes.append(el)
+
+                if len(list_filtered_classes) < 1:
+                    raise NameError(f"\nПо данному диапазону зарплат \n"
+                                    f"( от - {salary_from}, до - {salary_to}, валюта - {currency}. )\n"
+                                    f"не найдено ни одного совпадения ...")
+
+            if salary_from != "" and salary_to != "" and currency == "":
+                for el in list_classes:
+                    if el.salary_from >= int(salary_from) and el.salary_to <= int(salary_to):
+                        list_filtered_classes.append(el)
+
+                if len(list_filtered_classes) < 1:
+                    raise NameError(f"\nПо данному диапазону зарплат \n"
+                                    f"( от - {salary_from}, до - {salary_to} )\n"
+                                    f"не найдено ни одного совпадения ...")
+
+            if salary_from != "" and salary_to == "" and currency == "":
+                for el in list_classes:
+                    if el.salary_from >= int(salary_from):
+                        list_filtered_classes.append(el)
+
+                if len(list_filtered_classes) < 1:
+                    raise NameError(f"\nПо данному диапазону зарплат \n"
+                                    f"( от - {salary_from} )\n"
+                                    f"не найдено ни одного совпадения ...")
+
+            if salary_from == "" and salary_to != "" and currency != "":
+                for el in list_classes:
+                    if el.salary_to <= int(salary_to) and el.currency == currency:
+                        list_filtered_classes.append(el)
+
+                if len(list_filtered_classes) < 1:
+                    raise NameError(f"\nПо данному диапазону зарплат \n"
+                                    f"( до - {salary_to}, валюта - {currency}. )\n"
+                                    f"не найдено ни одного совпадения ...")
+
+            if salary_from == "" and salary_to == "" and currency != "":
+                for el in list_classes:
+                    if el.currency == currency:
+                        list_filtered_classes.append(el)
+
+                if len(list_filtered_classes) < 1:
+                    raise NameError(f"\nПо данному диапазону валюты \n"
+                                    f"( валюта - {currency}. )\n"
+                                    f"не найдено ни одного совпадения ...")
+
+            if salary_from == "" and salary_to != "" and currency == "":
+                for el in list_classes:
+                    if el.salary_to <= int(salary_to):
+                        list_filtered_classes.append(el)
+
+                if len(list_filtered_classes) < 1:
+                    raise NameError(f"\nПо данному диапазону зарплат \n"
+                                    f"( до - {salary_to} )\n"
+                                    f"не найдено ни одного совпадения ...")
+
+            if salary_from != "" and salary_to == "" and currency != "":
+                for el in list_classes:
+                    if el.salary_from >= int(salary_from) and el.salary_to <= int(salary_to) and el.currency == currency:
+                        list_filtered_classes.append(el)
+
+                if len(list_filtered_classes) < 1:
+                    raise NameError(f"\nПо данному диапазону зарплат \n"
+                                    f"( от - {salary_from}, валюта - {currency}. )\n"
+                                    f"не найдено ни одного совпадения ...")
+
+        else:
+            return list_classes
+
+    except NameError as a:
+        print(a)
     else:
         return list_filtered_classes
 
 
-def sort_vacancies(list_classes: list[object, ...] | object) -> list[object, ...] | object:
+def sort_vacancies(list_classes: list[object, ...] | object | None) -> list[object, ...] | object:
     """
     Функция сортирует список объектов по зарплате
     от большего к меньшему
@@ -51,30 +163,63 @@ def sort_vacancies(list_classes: list[object, ...] | object) -> list[object, ...
     :param list_classes: (list[object, ...] | object) список объектов или объект
     :return: (list[object, ...] | object) список отсортированных объектов или объект
     """
-    sorted_list = sorted(list_classes, reverse=True)
-    return sorted_list
+    try:
+        sorted_list = sorted(list_classes, reverse=True)
+        return sorted_list
+    except TypeError:
+        pass
 
 
-def get_top_vacancies(list_classes: list[object, ...] | object, top_n: str) -> list[object, ...] | object:
+def get_top_vacancies(list_classes: list[object, ...] | object | None, top_n: str) -> list[object, ...] | object:
     """
-    Функция сортирует список объектов по полученным параметрам
-    в данном случае по количеству элементов которые нужно вернуть
+    Функция возвращает только то количество элементов
+    которое укажет пользователь в параметре (top_n)
+
+    если параметр (top_n) не указан
+    функция вернет изначальный список (list_classes)
+
+    если переданный параметр (top_n) больше
+    чем количество элементов в списке
+    пользователю вернется список всех элементов
+    и сообщение о том что в списке нет указанного количества элементов
 
     :param list_classes: (list[object, ...]) список объектов
     :param top_n: (str) количество объектов которые нужно вернуть
     :return: (list[object, ...] | object) список объектов
     """
-    if top_n:
-        return list_classes[:int(top_n)]
-    else:
-        return list_classes
+    try:
+        if top_n:
+            try:
+                if int(top_n) > len(list_classes):
+                    if len(list_classes) != 11 and len(list_classes) % 10 == 1:
+                        raise IndexError(f"\n\nПо указанным параметрам мы нашли только {len(list_classes)} "
+                                         f"вакансию")
+                    elif 2 <= len(list_classes) <= 4:
+                        raise IndexError(f"\n\nПо указанным параметрам мы нашли только {len(list_classes)} "
+                                         f"вакансии")
+                    else:
+                        raise IndexError(f"\n\nПо указанным параметрам мы нашли только {len(list_classes)} "
+                                         f"вакансий")
+            except IndexError as a:
+                print(a)
+
+            finally:
+                return list_classes[:int(top_n)]
+
+        else:
+            return list_classes
+    except TypeError:
+        pass
 
 
-def print_vacancies(list_classes: list[object, ...] | object) -> None:
+def print_vacancies(list_classes: list[object, ...] | object | None) -> None:
     """
     Функция печатает список объектов
 
     :param list_classes: (list[object, ...]) список объектов
     """
-    for elem in list_classes:
-        print(elem)
+    try:
+        for elem in list_classes:
+            print(elem)
+    except TypeError:
+        pass
