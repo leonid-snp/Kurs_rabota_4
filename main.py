@@ -12,7 +12,7 @@ def user_interaction() -> None:
     print("Добро пожаловать на платформу HeadHunter")
     search_query = input("Введите поисковой запрос: ")
     top_n = input("Введите количество вакансий для вывода в топ N: ")
-    filter_word = input("Введите ключевое слово для фильтрации вакансий: ").lower()
+    filter_word = (input("Введите ключевые слова для фильтрации вакансий через \",\": "))
     salary_range = input("Введите диапазон зарплат и валюту через \"-\" : ")
 
     hh_api = VacanciesHH()

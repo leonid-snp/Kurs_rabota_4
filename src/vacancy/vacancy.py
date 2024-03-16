@@ -1,3 +1,5 @@
+import re
+
 from src.utils.currency_handler import get_currency_transfer
 
 
@@ -32,14 +34,14 @@ class Vacancy:
                     f"Название вакансии: {self.name}\n"
                     f"Город: {self.city}\n"
                     f"Заработная плата: Зарплата не указана...\n"
-                    f"Требования: {self.requirements}\n"
+                    f"Требования: {re.sub(r'<.*?>', '', self.requirements)}\n"
                     f"Ссылка на вакансию: {self.link}")
         else:
             return (f"\n{"-" * 50}\n\n"
                     f"Название вакансии: {self.name}\n"
                     f"Город: {self.city}\n"
                     f"Заработная плата: {self.salary_from}-{self.salary_to} {self.currency}.\n"
-                    f"Требования: {self.requirements if self.requirements else "Нету"}\n"
+                    f"Требования: {re.sub(r'<.*?>', '', self.requirements) if self.requirements else "Нету"}\n"
                     f"Ссылка на вакансию: {self.link}")
 
     def __eq__(self, other: object) -> bool:
@@ -82,25 +84,28 @@ class Vacancy:
         :return: (list[object, ...) список объектов
         """
         list_vacancies = []
-        for el in vacancies:
-            if el.get("salary"):
-                list_vacancies.append(cls(el.get("name"),
-                                          el.get("area").get("name"),
-                                          el.get("salary").get("from"),
-                                          el.get("salary").get("to"),
-                                          get_currency_transfer(el.get("salary").get("currency")),
-                                          el.get("snippet").get("requirement"),
-                                          el.get("alternate_url")
-                                          ))
+        try:
+            for el in vacancies:
+                if el.get("salary"):
+                    list_vacancies.append(cls(el.get("name"),
+                                              el.get("area").get("name"),
+                                              el.get("salary").get("from"),
+                                              el.get("salary").get("to"),
+                                              get_currency_transfer(el.get("salary").get("currency")),
+                                              el.get("snippet").get("requirement"),
+                                              el.get("alternate_url")
+                                              ))
 
-            else:
-                list_vacancies.append(cls(el.get("name"),
-                                          el.get("area").get("name"),
-                                          0,
-                                          0,
-                                          None,
-                                          el.get("snippet").get("requirement"),
-                                          el.get("alternate_url")
-                                          ))
+                else:
+                    list_vacancies.append(cls(el.get("name"),
+                                              el.get("area").get("name"),
+                                              0,
+                                              0,
+                                              None,
+                                              el.get("snippet").get("requirement"),
+                                              el.get("alternate_url")
+                                              ))
+        except TypeError:
+            pass
 
         return list_vacancies
