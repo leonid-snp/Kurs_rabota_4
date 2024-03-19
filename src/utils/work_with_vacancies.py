@@ -18,7 +18,6 @@ def filter_vacancies(list_classes: list[object, ...], word: str | None) -> list[
     :return: (list[object, ...]) отфильтрованный список объектов
     """
     try:
-        list_filtered_classes = []
         if word:
             try:
                 if "," not in word:
@@ -32,6 +31,7 @@ def filter_vacancies(list_classes: list[object, ...], word: str | None) -> list[
                 print(a)
 
             else:
+                list_filtered_classes = []
                 name, city = word.lower().replace(" ", "").split(",")
                 if name != "" and city != "":
                     for el in list_classes:

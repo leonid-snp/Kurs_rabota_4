@@ -19,7 +19,7 @@ class VacanciesHH(WorkWithAPIService):
 
         return response.status_code
 
-    def get_vacancies(self, param: str) -> list:
+    def get_vacancies(self, param: str) -> list[dict, ...] | None:
         """
         Функция возвращает вакансии сервиса hh.ru
 
@@ -34,23 +34,24 @@ class VacanciesHH(WorkWithAPIService):
         :param param: (str) Параметры поиска вакансий
         :return: (str) файл json
         """
-        if self.connect_to_api() != 200:
-            print(f"\nОшибка подключения статус ошибки {self.connect_to_api()} ...")
+        try:
+            if self.connect_to_api() != 200:
+                raise NameError(f"\nОшибка подключения статус ошибки {self.connect_to_api()} ...")
 
-        else:
-            if param:
-                response = requests.get("https://api.hh.ru/vacancies", params={
-                    "text": param,
-                })
-                try:
+            else:
+                if param:
+                    response = requests.get("https://api.hh.ru/vacancies", params={
+                        "text": param,
+                    })
                     if not response.json().get("items"):
                         raise NameError(f"\nПо поисковому запросу ({param}) "
                                         f"не найдено ни одного совпадения!")
-                except NameError as a:
-                    print(a)
+                    else:
+                        return response.json().get("items")
+
                 else:
+                    response = requests.get("https://api.hh.ru/vacancies")
                     return response.json().get("items")
 
-            else:
-                response = requests.get("https://api.hh.ru/vacancies")
-                return response.json().get("items")
+        except NameError as a:
+            print(a)
