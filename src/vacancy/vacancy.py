@@ -75,7 +75,7 @@ class Vacancy:
         return self.salary_from > other.salary_from
 
     @classmethod
-    def cast_to_object_list(cls, vacancies: list[dict, ...]) -> list[object, ...]:
+    def cast_to_object_list(cls, vacancies: list[dict, ...] | dict) -> list[object, ...]:
         """
         Класс метод который создает новый объект
         этого класса по полученным данным в поле (vacancies)
